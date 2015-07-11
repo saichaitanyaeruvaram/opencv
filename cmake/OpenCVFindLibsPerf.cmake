@@ -40,8 +40,22 @@ To eliminate this warning remove WITH_CUDA=ON CMake configuration option.
 endif(WITH_CUDA)
 
 # --- Eigen ---
-if(WITH_EIGEN AND NOT HAVE_EIGEN)
-  find_package(Eigen3 QUIET)
+if(WITH_EIGEN)
+  if(HUNTER_ENABLED)
+    hunter_add_package(Eigen)
+    find_package(Eigen REQUIRED)
+    get_target_property(
+        EIGEN_INCLUDE_PATH
+        Eigen::eigen
+        INTERFACE_INCLUDE_DIRECTORIES
+    )
+  else()
+    find_path(EIGEN_INCLUDE_PATH "Eigen/Core"
+              PATHS /usr/local /opt /usr $ENV{EIGEN_ROOT}/include ENV ProgramFiles ENV ProgramW6432
+              PATH_SUFFIXES include/eigen3 include/eigen2 Eigen/include/eigen3 Eigen/include/eigen2
+              DOC "The path to Eigen3/Eigen2 headers"
+              CMAKE_FIND_ROOT_PATH_BOTH)
+  endif()
 
   if(Eigen3_FOUND)
     if(TARGET Eigen3::Eigen)
