@@ -82,6 +82,13 @@ endif()
 set(include_dirs ${fw_inc})
 set(sources_options "")
 
+if(HUNTER_ENABLED AND APPLE)
+  find_package(accelerate REQUIRED)
+  set(__lapack_libraries accelerate::accelerate)
+else()
+  set(__lapack_libraries ${LAPACK_LIBRARIES})
+endif()
+
 set(libs libprotobuf ${LAPACK_LIBRARIES})
 
 if(OPENCV_DNN_OPENCL AND HAVE_OPENCL)
