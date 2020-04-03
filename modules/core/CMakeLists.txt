@@ -103,6 +103,14 @@ endif()
 
 ocv_create_module(${extra_libs})
 
+
+if(HUNTER_ENABLED AND APPLE)
+  find_package(accelerate REQUIRED)
+  set(__lapack_libraries accelerate::accelerate)
+else()
+  set(__lapack_libraries ${LAPACK_LIBRARIES})
+endif()
+
 ocv_target_link_libraries(${the_module} PRIVATE
     "${ZLIB_LIBRARIES}" "${OPENCL_LIBRARIES}" "${VA_LIBRARIES}"
     "${LAPACK_LIBRARIES}" "${CPUFEATURES_LIBRARIES}" "${HALIDE_LIBRARIES}"

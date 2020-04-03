@@ -106,8 +106,15 @@ if(NOT BUILD_PROTOBUF)
 endif()
 
 set(sources_options "")
+if(HUNTER_ENABLED AND APPLE)
+  find_package(accelerate REQUIRED)
+  set(__lapack_libraries accelerate::accelerate)
+else()
+  set(__lapack_libraries ${LAPACK_LIBRARIES})
+endif()
 
-list(APPEND libs ${LAPACK_LIBRARIES})
+set(libs libprotobuf ${LAPACK_LIBRARIES})
+
 if(OPENCV_DNN_OPENCL AND HAVE_OPENCL)
   list(APPEND include_dirs ${OPENCL_INCLUDE_DIRS})
 else()
