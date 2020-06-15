@@ -6,8 +6,8 @@ if(NOT WITH_PROTOBUF)
   return()
 endif()
 
-ocv_option(BUILD_PROTOBUF "Force to build libprotobuf from sources" ON)
-ocv_option(PROTOBUF_UPDATE_FILES "Force rebuilding .proto files (protoc should be available)" OFF)
+ocv_option(BUILD_PROTOBUF "Force to build libprotobuf from sources" OFF)
+ocv_option(PROTOBUF_UPDATE_FILES "Force rebuilding .proto files (protoc should be available)" ON)
 
 function(get_protobuf_version version include)
   file(STRINGS "${include}/google/protobuf/stubs/common.h" ver REGEX "#define GOOGLE_PROTOBUF_VERSION [0-9]+")
@@ -23,6 +23,7 @@ if(BUILD_PROTOBUF)
   set(HAVE_PROTOBUF TRUE)
 else()
   unset(Protobuf_VERSION CACHE)
+  hunter_add_package(Protobuf)
   find_package(Protobuf QUIET)
 
   # Backwards compatibility
@@ -62,6 +63,7 @@ else()
 endif()
 
 if(HAVE_PROTOBUF AND PROTOBUF_UPDATE_FILES AND NOT COMMAND PROTOBUF_GENERATE_CPP)
+  hunter_add_package(Protobuf)
   find_package(Protobuf QUIET)
   if(NOT COMMAND PROTOBUF_GENERATE_CPP)
     message(FATAL_ERROR "PROTOBUF_GENERATE_CPP command is not available")
