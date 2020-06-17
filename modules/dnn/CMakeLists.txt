@@ -89,7 +89,11 @@ else()
   set(__lapack_libraries ${LAPACK_LIBRARIES})
 endif()
 
-set(libs protobuf::libprotobuf ${LAPACK_LIBRARIES})
+if(CMAKE_HOST_UNIX)
+  set(libs protobuf::libprotobuf ${LAPACK_LIBRARIES})
+else()
+  set(libs libprotobuf ${LAPACK_LIBRARIES})
+endif()
 
 if(OPENCV_DNN_OPENCL AND HAVE_OPENCL)
   list(APPEND include_dirs ${OPENCL_INCLUDE_DIRS})
